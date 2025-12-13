@@ -27,14 +27,31 @@
         <h2>LEARNING 365</h2>
         <p>Learn. Grow. Excel.</p>
       </div>
+      <!-- Top Navigation -->
+<div class="top-nav">
+  <div class="menu-icon" onclick="toggleMenu()">⋮</div>
 
-      <nav class="menu">
-        <a href="dashboard.html" class="menu-item active">📊 Dashboard</a>
-        <a href="online-classes.html" class="menu-item">💻 Online Classes</a>
-        <a href="library.html" class="menu-item">📚 Library</a>
-        <a href="exam.html" class="menu-item">📝 Exam</a>
-        <a href="#notificationsSection" class="menu-item">🔔 Notifications</a>
-      </nav>
+  <div id="dropdownMenu" class="dropdown-menu">
+    <a href="home.html">Home</a>
+    <a href="online-classes.html">Online Classes</a>
+    <a href="library.html">Library</a>
+    <a href="exam.html">Online Exam</a>
+    <a href="profile.html">Profile</a>
+    <a href="sidebar.html"></a>
+  </div>
+</div>
+
+
+     <ul class="nav-links">
+  <li class="nav-item active"><a href="profile.html">👨‍🎓 Profile</a></li>
+  <li class="nav-item"><a href="dashboard.html">📊 Dashboard</a></li>
+  <li class="nav-item"><a href="online-classes.html">💻 Online Classes</a></li>
+  <li class="nav-item"><a href="library.html">📚 Library</a></li>
+  <li class="nav-item"><a href="exam.html">📝 Exam</a></li>
+  
+  
+</ul>
+
 
       <a href="index.html" class="logout">🚪 Logout</a>
     </div>
@@ -64,5 +81,21 @@
   </main>
 
   <script src="js/dashboard.js"></script>
+  <script>
+  function toggleMenu() {
+    const menu = document.getElementById("dropdownMenu");
+    menu.style.display =
+      menu.style.display === "block" ? "none" : "block";
+  }
+
+  // Close menu when clicking outside
+  window.onclick = function (e) {
+    if (!e.target.matches('.menu-icon')) {
+      const menu = document.getElementById("dropdownMenu");
+      if (menu) menu.style.display = "none";
+    }
+  };
+</script>
+
 </body>
 </html>

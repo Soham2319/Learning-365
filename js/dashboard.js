@@ -6,35 +6,57 @@ document.addEventListener("DOMContentLoaded", () => {
   const overlay = document.getElementById("overlay");
   const list = document.getElementById("notificationList");
 
-  // Open sidebar
+  /* =========================
+     OPEN SIDEBAR (Animated)
+  ========================== */
   hamburger.onclick = () => {
-    sidebar.classList.add("open");
-    overlay.classList.add("show");
+    sidebar.classList.add("open", "slide-in");
+    overlay.classList.add("show", "fade-in");
   };
 
-  // Close sidebar
+  /* =========================
+     CLOSE SIDEBAR (Animated)
+  ========================== */
   function closeNav() {
-    sidebar.classList.remove("open");
-    overlay.classList.remove("show");
+    sidebar.classList.remove("slide-in");
+    sidebar.classList.add("slide-out");
+
+    overlay.classList.remove("fade-in");
+    overlay.classList.add("fade-out");
+
+    setTimeout(() => {
+      sidebar.classList.remove("open", "slide-out");
+      overlay.classList.remove("show", "fade-out");
+    }, 300);
   }
 
   closeSidebar.onclick = closeNav;
   overlay.onclick = closeNav;
 
-  // Load notifications
-  const notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+  /* =========================
+     LOAD NOTIFICATIONS
+  ========================== */
+  const notifications =
+    JSON.parse(localStorage.getItem("notifications")) || [];
 
   if (notifications.length === 0) {
-    list.innerHTML = "<li>No notifications yet</li>";
+    list.innerHTML = "<li class='empty'>No notifications yet</li>";
     return;
   }
 
-  notifications.forEach(n => {
+  /* =========================
+     STAGGER ANIMATION
+  ========================== */
+  notifications.forEach((n, index) => {
     const li = document.createElement("li");
+    li.classList.add("notify-item");
+    li.style.animationDelay = `${index * 0.15}s`;
+
     li.innerHTML = `
-      ${n.message}
+      <span>${n.message}</span>
       <small>${n.time}</small>
     `;
+
     list.appendChild(li);
   });
 

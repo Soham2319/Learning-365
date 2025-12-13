@@ -1,0 +1,175 @@
+/* ===============================
+   PROFILE PAGE STYLES
+   File: assets/css/profile.css
+================================ */
+
+/* Container */
+/* ==========================
+   TOP NAVIGATION
+========================== */
+
+.top-nav {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 999;
+}
+
+/* Three Dot Icon */
+.menu-icon {
+  font-size: 28px;
+  cursor: pointer;
+  background: #5b2be0;
+  color: white;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  display: none;
+  margin-top: 10px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  overflow: hidden;
+  animation: fadeDown 0.3s ease;
+}
+
+/* Menu Links */
+.dropdown-menu a {
+  display: block;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.dropdown-menu a:hover {
+  background: #5b2be0;
+  color: white;
+}
+
+/* Animation */
+@keyframes fadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-container {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 20px;
+}
+
+/* Profile Card */
+.profile-card {
+  background: #ffffff;
+  padding: 35px;
+  border-radius: 16px;
+  display: flex;
+  gap: 40px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  animation: profileFadeUp 1s ease;
+}
+
+/* LEFT SIDE */
+.profile-left {
+  width: 260px;
+  text-align: center;
+}
+
+/* Profile Image */
+.profile-left img {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 5px solid #5b2be0;
+  object-fit: cover;
+  transition: 0.3s;
+}
+
+.profile-left img:hover {
+  transform: scale(1.05);
+}
+
+/* File Upload */
+.profile-left input[type="file"] {
+  margin-top: 15px;
+  width: 100%;
+  font-size: 14px;
+}
+
+/* RIGHT SIDE */
+.profile-right {
+  flex: 1;
+}
+
+/* Heading */
+.profile-right h2 {
+  font-size: 26px;
+  color: #5b2be0;
+  margin-bottom: 20px;
+}
+
+/* Profile Info Rows */
+.profile-info {
+  font-size: 17px;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-info span:first-child {
+  font-weight: bold;
+  color: #333;
+}
+
+.profile-info span:last-child {
+  color: #555;
+}
+
+/* ===============================
+   ANIMATION
+================================ */
+@keyframes profileFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===============================
+   RESPONSIVE DESIGN
+================================ */
+@media (max-width: 768px) {
+  .profile-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-left {
+    width: 100%;
+  }
+
+  .profile-right h2 {
+    margin-top: 15px;
+  }
+}

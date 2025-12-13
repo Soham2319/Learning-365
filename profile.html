@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Profile | Learning 365</title>
+
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    .profile-container {
+      max-width: 800px;
+      margin: 40px auto;
+    }
+
+    .profile-card {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      display: flex;
+      gap: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      animation: fadeUp 1s ease;
+    }
+
+    .profile-left {
+      text-align: center;
+      width: 250px;
+    }
+
+    .profile-left img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #2c7be5;
+    }
+
+    .profile-left input {
+      margin-top: 10px;
+    }
+
+    .profile-right {
+      flex: 1;
+    }
+
+    .profile-right h2 {
+      margin-bottom: 15px;
+      color: #2c7be5;
+    }
+
+    .profile-info {
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    .profile-info span {
+      font-weight: bold;
+      color: #333;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Login Guard -->
+<script>
+  if (!localStorage.getItem("currentUser")) {
+    window.location.href = "index.html";
+  }
+</script>
+
+<!-- Navbar -->
+<nav>
+  <a href="dashboard.html">Home</a>
+  <a href="classes.html">Online Classes</a>
+  <a href="library.html">Library</a>
+  <a href="exam.html">Online Exam</a>
+  <a href="online-classes.html">online-classes</a>
+  <a href="profile.html">Profile</a>
+</nav>
+
+<div class="profile-container">
+  <div class="profile-card">
+
+    <!-- LEFT -->
+    <div class="profile-left">
+      <img id="profilePic" src="https://via.placeholder.com/150">
+      <input type="file" accept="image/*" onchange="uploadPhoto(event)">
+    </div>
+
+    <!-- RIGHT -->
+    <div class="profile-right">
+      <h2>My Profile</h2>
+
+      <div class="profile-info">
+        <span>Name:</span> <span id="name"></span>
+      </div>
+
+      <div class="profile-info">
+        <span>Email:</span> <span id="email"></span>
+      </div>
+
+      <div class="profile-info">
+        <span>User ID:</span> <span id="userid"></span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+  let user = JSON.parse(localStorage.getItem("currentUser"));
+
+  document.getElementById("name").innerText = user.fname + " " + user.lname;
+  document.getElementById("email").innerText = user.email;
+  document.getElementById("userid").innerText = user.id;
+
+  // Load profile photo if exists
+  if (user.photo) {
+    document.getElementById("profilePic").src = user.photo;
+  }
+
+  function uploadPhoto(event) {
+    let file = event.target.files[0];
+    let reader = new FileReader();
+
+    reader.onload = function () {
+      document.getElementById("profilePic").src = reader.result;
+      user.photo = reader.result;
+
+      // Update current user
+      localStorage.setItem("currentUser", JSON.stringify(user));
+
+      // Update users array
+      let users = JSON.parse(localStorage.getItem("users"));
+      users = users.map(u => u.email === user.email ? user : u);
+      localStorage.setItem("users", JSON.stringify(users));
+    };
+
+    reader.readAsDataURL(file);
+  }
+</script>
+
+</body>
+</html>
