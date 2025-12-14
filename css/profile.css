@@ -1,175 +1,247 @@
-/* ===============================
-   PROFILE PAGE STYLES
-   File: assets/css/profile.css
-================================ */
-
-/* Container */
-/* ==========================
-   TOP NAVIGATION
-========================== */
-
-.top-nav {
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  z-index: 999;
+/* Custom properties for color palette (Consistent with Dashboard) */
+:root {
+    --primary-purple: #7f00ff;
+    --secondary-blue: #007bff;
+    --success-green: #28a745;
+    --warning-orange: #ffc107;
+    --background-light: #f4f6f9;
+    --text-dark: #343a40;
+    --text-light: #ffffff;
+    --card-bg: #ffffff;
+    --border-light: #e0e0e0;
+    --transition-speed: 0.3s;
 }
 
-/* Three Dot Icon */
-.menu-icon {
-  font-size: 28px;
-  cursor: pointer;
-  background: #5b2be0;
-  color: white;
-  width: 45px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+/* Base Styling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-/* Dropdown Menu */
-.dropdown-menu {
-  display: none;
-  margin-top: 10px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  overflow: hidden;
-  animation: fadeDown 0.3s ease;
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-dark);
+    min-height: 100vh;
 }
 
-/* Menu Links */
-.dropdown-menu a {
-  display: block;
-  padding: 12px 20px;
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  transition: 0.3s;
-}
-
-.dropdown-menu a:hover {
-  background: #5b2be0;
-  color: white;
-}
-
-/* Animation */
-@keyframes fadeDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* --- MAIN CONTAINER & HEADER (Consistent Style) --- */
 
 .profile-container {
-  max-width: 900px;
-  margin: 60px auto;
-  padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
 }
 
-/* Profile Card */
-.profile-card {
-  background: #ffffff;
-  padding: 35px;
-  border-radius: 16px;
-  display: flex;
-  gap: 40px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-  animation: profileFadeUp 1s ease;
+.page-header {
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--border-light);
+    padding-bottom: 15px;
 }
 
-/* LEFT SIDE */
-.profile-left {
-  width: 260px;
-  text-align: center;
-}
-
-/* Profile Image */
-.profile-left img {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  border: 5px solid #5b2be0;
-  object-fit: cover;
-  transition: 0.3s;
-}
-
-.profile-left img:hover {
-  transform: scale(1.05);
-}
-
-/* File Upload */
-.profile-left input[type="file"] {
-  margin-top: 15px;
-  width: 100%;
-  font-size: 14px;
-}
-
-/* RIGHT SIDE */
-.profile-right {
-  flex: 1;
-}
-
-/* Heading */
-.profile-right h2 {
-  font-size: 26px;
-  color: #5b2be0;
-  margin-bottom: 20px;
-}
-
-/* Profile Info Rows */
-.profile-info {
-  font-size: 17px;
-  margin-bottom: 12px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid #eee;
-}
-
-.profile-info span:first-child {
-  font-weight: bold;
-  color: #333;
-}
-
-.profile-info span:last-child {
-  color: #555;
-}
-
-/* ===============================
-   ANIMATION
-================================ */
-@keyframes profileFadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(35px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ===============================
-   RESPONSIVE DESIGN
-================================ */
-@media (max-width: 768px) {
-  .profile-card {
-    flex-direction: column;
+.back-btn {
+    background: none;
+    border: none;
+    color: var(--primary-purple);
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    display: inline-flex;
     align-items: center;
+    transition: color var(--transition-speed);
+}
+
+.back-btn i {
+    margin-right: 8px;
+}
+
+.back-btn:hover {
+    color: #4b0082;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.page-title i {
+    color: var(--primary-purple);
+    margin-right: 10px;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+/* Content Area Wrapper */
+.content-area {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* --- PROFILE CARD LAYOUT --- */
+
+.profile-card {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.profile-left {
     text-align: center;
-  }
+    width: 250px;
+    flex-shrink: 0;
+}
 
-  .profile-left {
+.profile-right {
+    flex: 1;
+}
+
+.profile-right h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-purple);
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+/* Profile Picture Styling */
+.profile-image-wrapper {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 10px; /* Reduced bottom margin */
+}
+
+.profile-image-wrapper img {
     width: 100%;
-  }
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-purple);
+    box-shadow: 0 0 0 8px rgba(127, 0, 255, 0.1); 
+}
 
-  .profile-right h2 {
-    margin-top: 15px;
-  }
+/* Custom File Upload Button - THE FIX */
+.hidden-file-input {
+    display: none;
+}
+
+.upload-label {
+    /* Style the camera/pencil icon badge */
+    position: absolute;
+    bottom: 5px; /* Moved slightly up */
+    right: 5px; /* Moved slightly left */
+    width: 40px;
+    height: 40px;
+    background-color: var(--success-green); /* Use a prominent action color */
+    color: var(--text-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    border: 3px solid var(--card-bg);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s;
+}
+
+.upload-label:hover {
+    background-color: #1e7e34; /* Darken green on hover */
+}
+
+.upload-tip {
+    display: block;
+    font-size: 0.8rem;
+    color: #999;
+}
+
+/* Info Display Styling */
+.info-group {
+    display: flex;
+    margin-bottom: 15px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border-light);
+}
+
+.info-label {
+    font-weight: 600;
+    color: var(--text-dark);
+    min-width: 120px;
+    display: flex;
+    align-items: center;
+}
+
+.info-label i {
+    color: var(--secondary-blue);
+    margin-right: 10px;
+}
+
+.info-value {
+    font-weight: 400;
+    color: #555;
+    word-break: break-all;
+}
+
+/* Edit Button */
+.edit-btn {
+    background-color: var(--primary-purple); /* Changed to purple for consistency */
+    color: var(--text-light);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.2s;
+}
+
+.edit-btn i {
+    margin-right: 5px;
+}
+
+.edit-btn:hover {
+    background-color: #4b0082;
+}
+
+/* --- RESPONSIVENESS --- */
+@media (max-width: 768px) {
+    .profile-card {
+        flex-direction: column;
+        gap: 30px;
+        align-items: center;
+    }
+    
+    .profile-left {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .profile-right {
+        width: 100%;
+        text-align: left;
+    }
+    
+    .info-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .info-label {
+        margin-bottom: 5px;
+        min-width: auto;
+    }
+    
+    .edit-btn {
+        width: 100%;
+    }
 }

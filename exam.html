@@ -5,29 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Learning 365 | Exam</title>
   <link rel="stylesheet" href="css/exam.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
   <main class="exam-container">
 
-    <button class="back-btn" onclick="goBack()">← Back to Dashboard</button>
+    <header class="page-header">
+        <a href="dashboard.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        
+        <h1 class="page-title"><i class="fas fa-robot"></i> AI-Simulated Exam</h1>
+        <p class="subtitle">
+          Questions are generated automatically from library content
+        </p>
+    </header>
 
-    <h1>AI-Simulated Exam</h1>
-    <p class="subtitle">
-      Questions are generated automatically from library content
-    </p>
+    <div class="content-area">
 
-    <div id="examBox" class="exam-box">
-      <button id="startExam" class="start-btn">Start Exam</button>
+        <div id="examBox" class="start-exam-card">
+            <h3 class="card-title">Ready for Assessment?</h3>
+            <p class="card-description">Test your knowledge based on your uploaded Library resources.</p>
+            <button id="startExam" class="start-btn"><i class="fas fa-bolt"></i> Start Exam Now</button>
+        </div>
+
+        <section class="dashboard-section exam-history-section">
+          <h2><i class="fas fa-history"></i> Exam History</h2>
+          
+          <ul id="historyList" class="history-list">
+              <li id="historyEmptyState" class="empty-history-item">No exam attempts recorded yet.</li>
+              
+              </ul>
+        </section>
+
     </div>
-
-    <section class="history">
-      <h2>Exam History</h2>
-      <ul id="historyList"></ul>
-    </section>
 
   </main>
 
   <script src="js/exam.js"></script>
+  <script>
+    // Simple JS for the back button
+    function goBack() {
+        window.location.href = 'dashboard.html';
+    }
+</script>
 </body>
 </html>

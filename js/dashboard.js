@@ -1,5 +1,25 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // --- 1. SIDEBAR AND HAMBURGER MENU LOGIC ---
+    
+    // --- 0. LOGIN GUARD AND USER RETRIEVAL ---
+    
+    let user = null;
+    try {
+        const userString = localStorage.getItem("currentUser");
+        if (!userString) {
+            // If currentUser is missing, redirect to login
+            window.location.href = "index.html"; 
+            return; // Stop execution if no user is found
+        }
+        user = JSON.parse(userString);
+    } catch (e) {
+        console.error("Error parsing user data:", e);
+        // Clear corrupt data and redirect
+        localStorage.removeItem("currentUser");
+        window.location.href = "index.html";
+        return;
+    }
+
+    // --- 1. SIDEBAR AND HAMBURGER MENU LOGIC (Existing Code) ---
     
     const sidebar = document.getElementById('sidebar');
     const hamburger = document.getElementById('hamburger');
@@ -29,11 +49,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // --- 2. DYNAMIC WELCOME GREETING LOGIC ---
+    // --- 2. DYNAMIC WELCOME GREETING LOGIC (Modified) ---
 
     /**
      * Updates the welcome greeting with the logged-in user's name.
-     * @param {string} name - The full name of the user (e.g., "anubhav samanta").
+     * @param {string} name - The full name of the user.
      */
     function updateWelcomeGreeting(name) {
         const userNameElement = document.getElementById('userNamePlaceholder');
@@ -46,19 +66,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
                 .join(' ');
                 
-            userNameElement.textContent = formattedName;
+            // Assuming your placeholder is in an element that needs its text content updated
+            userNameElement.textContent = formattedName; 
         }
     }
 
-    // --- 3. EXECUTION: CALLING THE GREETING FUNCTION ---
+    // --- 3. LOGOUT FUNCTIONALITY (NEW - GLOBAL) ---
     
-    // IMPORTANT: In a real application, you must replace the hardcoded string 
-    // below with the actual user name retrieved from your server/session data 
-    // when the page loads after login.
-    
-    // Example User Name (replace this with your backend variable)
-    const loggedInUserName = "anubhav samanta"; 
+    /**
+     * Executes the logout process.
+     * Note: This function is attached to the global window object 
+     * so it can be called directly from the HTML's onclick attribute.
+     */
+    window.logout = function() {
+        localStorage.removeItem("currentUser");
+        // Redirect to the login page
+        window.location.href = "index.html";
+    }
 
-    // Call the function to update the dashboard greeting
-    updateWelcomeGreeting(loggedInUserName);
+    // --- 4. EXECUTION: CALLING THE GREETING FUNCTION (Fixed) ---
+    
+    if (user) {
+        // Use the user's first and last name from the stored user object
+        const loggedInUserName = `${user.fname || ''} ${user.lname || ''}`; 
+        
+        // Call the function to update the dashboard greeting
+        updateWelcomeGreeting(loggedInUserName);
+        
+        // Optional: If you have a separate profile picture element, update it here:
+        // document.getElementById('profilePicSidebar').src = user.photo || 'default-avatar.png';
+    }
+    
+    // Attach logout function to a sidebar link/button if needed (e.g., id="logoutLink")
+    const logoutLink = document.getElementById('logoutLink'); 
+    if (logoutLink) {
+        logoutLink.addEventListener('click', window.logout);
+    }
 });

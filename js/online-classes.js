@@ -1,152 +1,142 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', function() {
+    // --- UI ELEMENTS ---
+    const addClassBtn = document.getElementById('addClassBtn');
+    const modal = document.getElementById('modal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const saveClassBtn = document.getElementById('saveClass');
+    const classListContainer = document.getElementById('classList');
+    const emptyState = document.getElementById('emptyState');
 
-  const addBtn = document.getElementById("addClassBtn");
-  const modal = document.getElementById("modal");
-  const closeModal = document.getElementById("closeModal");
-  const saveClass = document.getElementById("saveClass");
+    // --- FORM ELEMENTS ---
+    const formInputs = {
+        title: document.getElementById('classTitle'),
+        teacher: document.getElementById('classTeacher'),
+        link: document.getElementById('classLink'),
+        startDate: document.getElementById('startDate'),
+        startTime: document.getElementById('startTime'),
+        startMeridiem: document.getElementById('startMeridiem'),
+        endDate: document.getElementById('endDate'),
+        endTime: document.getElementById('endTime'),
+        endMeridiem: document.getElementById('endMeridiem')
+    };
 
-  const classList = document.getElementById("classList");
-  const emptyState = document.getElementById("emptyState");
+    // Initialize the classes array (to store added classes)
+    // Try to load existing classes from local storage, or start with an empty array
+    let classes = JSON.parse(localStorage.getItem('learning365Classes')) || [];
 
-  const titleInput = document.getElementById("classTitle");
-  const teacherInput = document.getElementById("classTeacher");
-  const linkInput = document.getElementById("classLink");
+    // --- LOGIC FUNCTIONS ---
 
-  const startDate = document.getElementById("startDate");
-  const startTime = document.getElementById("startTime");
-  const startMeridiem = document.getElementById("startMeridiem");
-
-  const endDate = document.getElementById("endDate");
-  const endTime = document.getElementById("endTime");
-  const endMeridiem = document.getElementById("endMeridiem");
-
-  // Back button
-  window.goBack = function () {
-    window.location.href = "dashboard.html";
-  };
-
-  modal.style.display = "none";
-
-  let classes = JSON.parse(localStorage.getItem("classes")) || [];
-
-  removeExpiredClasses();
-  renderClasses();
-
-  // Open modal
-  addBtn.addEventListener("click", () => {
-    modal.style.display = "flex";
-  });
-
-  // Close modal
-  closeModal.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-
-  // Save class
-  saveClass.addEventListener("click", () => {
-
-    if (
-      !titleInput.value ||
-      !teacherInput.value ||
-      !linkInput.value ||
-      !startDate.value ||
-      !startTime.value ||
-      !endDate.value ||
-      !endTime.value
-    ) {
-      alert("Please fill all fields");
-      return;
+    /**
+     * Toggles the visibility between the empty state and the class list.
+     */
+    function updateClassListVisibility() {
+        if (classes.length === 0) {
+            emptyState.style.display = 'block';
+            classListContainer.style.display = 'none';
+        } else {
+            emptyState.style.display = 'none';
+            classListContainer.style.display = 'grid'; // Use grid for card display
+            renderClasses();
+        }
     }
 
-    const startTimestamp = buildTimestamp(
-      startDate.value,
-      startTime.value,
-      startMeridiem.value
-    );
+    /**
+     * Renders all classes from the 'classes' array into the UI.
+     */
+    function renderClasses() {
+        classListContainer.innerHTML = ''; // Clear existing content
 
-    const endTimestamp = buildTimestamp(
-      endDate.value,
-      endTime.value,
-      endMeridiem.value
-    );
+        classes.forEach(classData => {
+            const card = document.createElement('div');
+            card.className = 'class-card';
 
-    if (endTimestamp <= startTimestamp) {
-      alert("End time must be after start time");
-      return;
+            // Determine if the class is starting today/soon (Basic check for demo)
+            const classDate = new Date(classData.startDate);
+            const today = new Date();
+            const statusText = (classDate.toDateString() === today.toDateString()) ? 'LIVE' : 'SCHEDULED';
+            const statusClass = (statusText === 'LIVE') ? 'live' : 'scheduled';
+
+            card.innerHTML = `
+                <div class="class-header">
+                    <span class="status ${statusClass}">${statusText}</span>
+                </div>
+                <h3 class="class-title-card">${classData.title}</h3>
+                <p class="class-teacher"><i class="fas fa-user-tie"></i> Taught by: ${classData.teacher}</p>
+                <div class="class-schedule">
+                    <span class="schedule-item"><i class="fas fa-calendar-alt"></i> Starts: ${new Date(classData.startDate).toLocaleDateString()}</span>
+                    <span class="schedule-item"><i class="fas fa-clock"></i> Time: ${classData.startTime} ${classData.startMeridiem} - ${classData.endTime} ${classData.endMeridiem}</span>
+                </div>
+                <a href="${classData.link}" target="_blank" class="join-btn"><i class="fas fa-video"></i> Join Class</a>
+            `;
+            classListContainer.appendChild(card);
+        });
     }
 
-    classes.push({
-      title: titleInput.value,
-      teacher: teacherInput.value,
-      link: linkInput.value,
-      startTime: startTimestamp,
-      endTime: endTimestamp
+    /**
+     * Clears all input fields in the modal form.
+     */
+    function clearForm() {
+        Object.values(formInputs).forEach(input => {
+            if (input.tagName === 'SELECT') {
+                input.value = 'AM';
+            } else {
+                input.value = '';
+                // Reset text input type for placeholder effect if needed
+                if (input.type === 'date' || input.type === 'time') {
+                     input.type = 'text';
+                }
+            }
+        });
+    }
+
+    // --- EVENT HANDLERS ---
+
+    // 1. Modal Open
+    addClassBtn.addEventListener('click', () => {
+        modal.style.display = 'flex';
     });
 
-    localStorage.setItem("classes", JSON.stringify(classes));
-    addNotification(`New online class added: ${titleInput.value}`);
-
-
-    // Reset
-    document.querySelectorAll("#modal input").forEach(i => i.value = "");
-    modal.style.display = "none";
-
-    renderClasses();
-  });
-
-  function buildTimestamp(date, time, meridiem) {
-    let [hours, minutes] = time.split(":").map(Number);
-
-    if (meridiem === "PM" && hours < 12) hours += 12;
-    if (meridiem === "AM" && hours === 12) hours = 0;
-
-    const d = new Date(date);
-    d.setHours(hours, minutes, 0, 0);
-    return d.getTime();
-  }
-
-  function removeExpiredClasses() {
-    const now = Date.now();
-    classes = classes.filter(c => c.endTime > now);
-    localStorage.setItem("classes", JSON.stringify(classes));
-  }
-
-  function renderClasses() {
-    classList.innerHTML = "";
-
-    if (classes.length === 0) {
-      emptyState.style.display = "block";
-      return;
-    }
-
-    emptyState.style.display = "none";
-
-    classes.forEach(c => {
-      const card = document.createElement("div");
-      card.className = "class-card";
-      card.innerHTML = `
-        <h3>${c.title}</h3>
-        <p>👨‍🏫 ${c.teacher}</p>
-        <p>🕒 ${new Date(c.startTime).toLocaleString()} - ${new Date(c.endTime).toLocaleString()}</p>
-        <a href="${c.link}" target="_blank">Join Class</a>
-      `;
-      classList.appendChild(card);
+    // 2. Modal Close
+    closeModalBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+        clearForm(); // Optionally clear form on cancel
     });
-  }
 
-  setInterval(() => {
-    removeExpiredClasses();
-    renderClasses();
-  }, 60000);
+    // 3. Save Class (The core logic)
+    saveClassBtn.addEventListener('click', () => {
+        // Basic Validation: Check if key fields are filled
+        if (!formInputs.title.value || !formInputs.teacher.value || !formInputs.startDate.value || !formInputs.startTime.value) {
+            alert('Please fill in at least the Class Title, Teacher, Start Date, and Start Time.');
+            return;
+        }
 
+        // Gather all data
+        const newClass = {
+            title: formInputs.title.value,
+            teacher: formInputs.teacher.value,
+            link: formInputs.link.value || '#', // Use '#' if link is empty
+            startDate: formInputs.startDate.value,
+            startTime: formInputs.startTime.value,
+            startMeridiem: formInputs.startMeridiem.value,
+            endDate: formInputs.endDate.value,
+            endTime: formInputs.endTime.value,
+            endMeridiem: formInputs.endMeridiem.value,
+        };
+
+        // Add to array
+        classes.push(newClass);
+
+        // Update Local Storage
+        localStorage.setItem('learning365Classes', JSON.stringify(classes));
+
+        // Update UI
+        updateClassListVisibility(); 
+        
+        // Final Steps
+        modal.style.display = 'none';
+        clearForm();
+    });
+
+    // --- INITIALIZATION ---
+    updateClassListVisibility(); // Load initial state on page load
 });
-function addNotification(message) {
-  let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
-
-  notifications.unshift({
-    message,
-    time: new Date().toLocaleString()
-  });
-
-  localStorage.setItem("notifications", JSON.stringify(notifications));
-}

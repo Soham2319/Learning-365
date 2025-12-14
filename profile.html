@@ -2,144 +2,80 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Profile | Learning 365</title>
 
-  <link rel="stylesheet" href="assets/css/profile.css">
-  <a href="dashboard.html"></a>
-
-  <style>
-    .profile-container {
-      max-width: 800px;
-      margin: 40px auto;
-    }
-
-    .profile-card {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      display: flex;
-      gap: 30px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      animation: fadeUp 1s ease;
-    }
-
-    .profile-left {
-      text-align: center;
-      width: 250px;
-    }
-
-    .profile-left img {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 4px solid #2c7be5;
-    }
-
-    .profile-left input {
-      margin-top: 10px;
-    }
-
-    .profile-right {
-      flex: 1;
-    }
-
-    .profile-right h2 {
-      margin-bottom: 15px;
-      color: #2c7be5;
-    }
-
-    .profile-info {
-      margin: 10px 0;
-      font-size: 16px;
-    }
-
-    .profile-info span {
-      font-weight: bold;
-      color: #333;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  <link rel="stylesheet" href="css/profile.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
 
-<!-- Login Guard -->
+  <main class="profile-container">
+
+    <header class="page-header">
+        <a href="dashboard.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        
+        <h1 class="page-title"><i class="fas fa-user-circle"></i> My Profile</h1>
+        <p class="subtitle">View and manage your personal account details.</p>
+    </header>
+
+    <div class="content-area">
+
+      <div class="profile-card">
+
+        <div class="profile-left">
+          <div class="profile-image-wrapper">
+             <img id="profilePic" src="https://via.placeholder.com/150" alt="Profile Picture">
+             
+             <label for="fileUpload" class="upload-label">
+                <i class="fas fa-camera"></i> 
+             </label>
+             <input type="file" id="fileUpload" accept="image/*" onchange="uploadPhoto(event)" class="hidden-file-input">
+          </div>
+          <span class="upload-tip">JPG/PNG recommended (Max 2MB)</span>
+        </div>
+
+        <div class="profile-right">
+          <h2>Account Details</h2>
+
+          <div class="info-group">
+            <span class="info-label"><i class="fas fa-user"></i> Name:</span>
+            <span id="name" class="info-value"></span>
+          </div>
+
+          <div class="info-group">
+            <span class="info-label"><i class="fas fa-envelope"></i> Email:</span>
+            <span id="email" class="info-value"></span>
+          </div>
+
+          <div class="info-group">
+            <span class="info-label"><i class="fas fa-id-card"></i> User ID:</span>
+            <span id="userid" class="info-value"></span>
+          </div>
+          
+          <button class="edit-btn"><i class="fas fa-edit"></i> Edit Details</button>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+
+<script src="js/profile.js"></script>
+<script>
+  // Simple JS for the back button
+  function goBack() {
+      window.location.href = 'dashboard.html';
+  }
+</script>
+
 <script>
   if (!localStorage.getItem("currentUser")) {
     window.location.href = "index.html";
   }
 </script>
-
-<!-- Navbar -->
-
-
-<div class="profile-container">
-  <div class="profile-card">
-
-    <!-- LEFT -->
-    <div class="profile-left">
-      <img id="profilePic" src="https://via.placeholder.com/150">
-      <input type="file" accept="image/*" onchange="uploadPhoto(event)">
-    </div>
-
-    <!-- RIGHT -->
-    <div class="profile-right">
-      <h2>My Profile</h2>
-
-      <div class="profile-info">
-        <span>Name:</span> <span id="name"></span>
-      </div>
-
-      <div class="profile-info">
-        <span>Email:</span> <span id="email"></span>
-      </div>
-
-      <div class="profile-info">
-        <span>User ID:</span> <span id="userid"></span>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- JavaScript -->
-<script>
-  let user = JSON.parse(localStorage.getItem("currentUser"));
-
-  document.getElementById("name").innerText = user.fname + " " + user.lname;
-  document.getElementById("email").innerText = user.email;
-  document.getElementById("userid").innerText = user.id;
-
-  // Load profile photo if exists
-  if (user.photo) {
-    document.getElementById("profilePic").src = user.photo;
-  }
-
-  function uploadPhoto(event) {
-    let file = event.target.files[0];
-    let reader = new FileReader();
-
-    reader.onload = function () {
-      document.getElementById("profilePic").src = reader.result;
-      user.photo = reader.result;
-
-      // Update current user
-      localStorage.setItem("currentUser", JSON.stringify(user));
-
-      // Update users array
-      let users = JSON.parse(localStorage.getItem("users"));
-      users = users.map(u => u.email === user.email ? user : u);
-      localStorage.setItem("users", JSON.stringify(users));
-    };
-
-    reader.readAsDataURL(file);
-  }
-</script>
-
 </body>
 </html>
