@@ -1,63 +1,64 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', function() {
+    // --- 1. SIDEBAR AND HAMBURGER MENU LOGIC ---
+    
+    const sidebar = document.getElementById('sidebar');
+    const hamburger = document.getElementById('hamburger');
+    const overlay = document.getElementById('overlay');
 
-  const sidebar = document.getElementById("sidebar");
-  const hamburger = document.getElementById("hamburger");
-  const closeSidebar = document.getElementById("closeSidebar");
-  const overlay = document.getElementById("overlay");
-  const list = document.getElementById("notificationList");
+    /**
+     * Toggles the sidebar visibility and overlay state.
+     */
+    function toggleSidebar() {
+        sidebar.classList.toggle('open'); 
+        overlay.classList.toggle('active');
+    }
 
-  /* =========================
-     OPEN SIDEBAR (Animated)
-  ========================== */
-  hamburger.onclick = () => {
-    sidebar.classList.add("open", "slide-in");
-    overlay.classList.add("show", "fade-in");
-  };
+    // Event listeners to open/close the sidebar
+    if (hamburger) {
+        hamburger.addEventListener('click', toggleSidebar);
+    }
+    if (overlay) {
+        overlay.addEventListener('click', toggleSidebar);
+    }
+    
+    // Auto-close sidebar on larger screens if window is resized while sidebar is open
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 1024) {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+    });
 
-  /* =========================
-     CLOSE SIDEBAR (Animated)
-  ========================== */
-  function closeNav() {
-    sidebar.classList.remove("slide-in");
-    sidebar.classList.add("slide-out");
+    // --- 2. DYNAMIC WELCOME GREETING LOGIC ---
 
-    overlay.classList.remove("fade-in");
-    overlay.classList.add("fade-out");
+    /**
+     * Updates the welcome greeting with the logged-in user's name.
+     * @param {string} name - The full name of the user (e.g., "anubhav samanta").
+     */
+    function updateWelcomeGreeting(name) {
+        const userNameElement = document.getElementById('userNamePlaceholder');
+        
+        if (userNameElement && name) {
+            // This logic cleans up the name (e.g., "anubhav samanta" -> "Anubhav Samanta")
+            const formattedName = name
+                .trim()
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
+                
+            userNameElement.textContent = formattedName;
+        }
+    }
 
-    setTimeout(() => {
-      sidebar.classList.remove("open", "slide-out");
-      overlay.classList.remove("show", "fade-out");
-    }, 300);
-  }
+    // --- 3. EXECUTION: CALLING THE GREETING FUNCTION ---
+    
+    // IMPORTANT: In a real application, you must replace the hardcoded string 
+    // below with the actual user name retrieved from your server/session data 
+    // when the page loads after login.
+    
+    // Example User Name (replace this with your backend variable)
+    const loggedInUserName = "anubhav samanta"; 
 
-  closeSidebar.onclick = closeNav;
-  overlay.onclick = closeNav;
-
-  /* =========================
-     LOAD NOTIFICATIONS
-  ========================== */
-  const notifications =
-    JSON.parse(localStorage.getItem("notifications")) || [];
-
-  if (notifications.length === 0) {
-    list.innerHTML = "<li class='empty'>No notifications yet</li>";
-    return;
-  }
-
-  /* =========================
-     STAGGER ANIMATION
-  ========================== */
-  notifications.forEach((n, index) => {
-    const li = document.createElement("li");
-    li.classList.add("notify-item");
-    li.style.animationDelay = `${index * 0.15}s`;
-
-    li.innerHTML = `
-      <span>${n.message}</span>
-      <small>${n.time}</small>
-    `;
-
-    list.appendChild(li);
-  });
-
+    // Call the function to update the dashboard greeting
+    updateWelcomeGreeting(loggedInUserName);
 });

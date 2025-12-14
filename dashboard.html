@@ -5,78 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Learning 365 — Dashboard</title>
   <link rel="stylesheet" href="css/dashboard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
-  <!-- HAMBURGER -->
   <button id="hamburger" class="hamburger">
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
   </button>
-
-  <!-- OVERLAY -->
   <div id="overlay" class="overlay"></div>
 
-  <!-- SIDEBAR -->
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-inner">
-      <button id="closeSidebar" class="close-btn">✕</button>
-
       <div class="brand">
-        <h2>LEARNING 365</h2>
-        <p>Learn. Grow. Excel.</p>
+        <span class="logo-icon"><i class="fas fa-graduation-cap"></i></span>
+        <h2>LEARNING **365**</h2>
+        <p class="tagline">Learn. Grow. Excel.</p>
       </div>
-      <!-- Top Navigation -->
-<div class="top-nav">
-  <div class="menu-icon" onclick="toggleMenu()">⋮</div>
 
-  <div id="dropdownMenu" class="dropdown-menu">
-    <a href="home.html"></a>
-    <a href="online-classes.html"></a>
-    <a href="library.html"></a>
-    <a href="exam.html"></a>
-    <a href="profile.html"></a>
-    <a href="sidebar.html"></a>
-    <a href="index.html"></a>
-    
-  </div>
-</div>
-
-
-     <ul class="nav-links">
-  <li class="nav-item"><a href="online-classes.html">💻 Online Classes</a></li>
-  <li class="nav-item"><a href="library.html">📚 Library</a></li>
-  <li class="nav-item"><a href="exam.html">📝 Exam</a></li>
-  <li class="nav-item active"><a href="profile.html">👨‍🎓 Profile</a></li>
-  <li class ="nav-item"><a href="logout">🚪 Logout</a></li>
-  
-  
-  
-</ul>
-
-
-      
+      <ul class="nav-links">
+        <li class="nav-item active"><a href="dashboard.html"><i class="fas fa-columns"></i> Dashboard</a></li>
+        <li class="nav-item"><a href="online-classes.html"><i class="fas fa-laptop-code"></i> Online Classes</a></li>
+        <li class="nav-item"><a href="library.html"><i class="fas fa-book-open"></i> Library</a></li>
+        <li class="nav-item"><a href="exam.html"><i class="fas fa-pencil-alt"></i> Exam</a></li>
+        <li class="nav-item"><a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a></li>
+        <li class ="nav-item logout-link"><a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
     </div>
   </aside>
 
-  <!-- MAIN CONTENT -->
   <main class="content">
 
-    <!-- CONTAINER WITH ANIMATED BORDER -->
-    <div class="ppt-slide animated-border">
-
-     <div class="welcome-box">
-  <h1 class="welcome-title">Hello, Learner ✌</h1>
-  <p class="welcome-subtitle">
-    ⬇️ All your updates appear below ⬇️
-  </p>
+    <div class="main-container">
+    
+      <div class="welcome-banner">
+  <h1 class="welcome-title">Welcome back, <span id="userNamePlaceholder">Learner</span>!</h1>
+  <p class="welcome-subtitle">Continue your learning journey and check your progress.</p>
 </div>
+  
 
-
-      <section id="notificationsSection" class="notifications">
-        <h2>Notifications</h2>
-        <ul id="notificationList"></ul>
+      <section id="notificationsSection" class="dashboard-section notifications-section">
+        <h2><i class="fas fa-bell"></i> Latest Notifications</h2>
+        <ul id="notificationList" class="notification-list">
+          <li class="notification-item new-update">New online class added: **python** 14/12/2025, 13:00:30</li>
+          <li class="notification-item">New library resource added: **python** 14/12/2025, 12:57:54</li>
+          <li class="notification-item">New library resource added: **masir** 14/12/2025, 10:31:52</li>
+        </ul>
+      </section>
+      
+      <section class="dashboard-section continue-learning">
+          <h2><i class="fas fa-rocket"></i> Continue Learning</h2>
+          <div class="course-cards-container">
+              <div class="course-card">Web Development Fundamentals</div>
+              <div class="course-card">Data Science Basics</div>
+          </div>
       </section>
 
     </div>
@@ -85,20 +69,21 @@
 
   <script src="js/dashboard.js"></script>
   <script>
-  function toggleMenu() {
-    const menu = document.getElementById("dropdownMenu");
-    menu.style.display =
-      menu.style.display === "block" ? "none" : "block";
-  }
-
-  // Close menu when clicking outside
-  window.onclick = function (e) {
-    if (!e.target.matches('.menu-icon')) {
-      const menu = document.getElementById("dropdownMenu");
-      if (menu) menu.style.display = "none";
+    // --- TEMPORARY CLIENT-SIDE LOGIC FOR DEMO ---
+    // In a real application, the name would be inserted by your server-side code (PHP, Node, etc.)
+    // For demonstration, let's pretend the user's name is retrieved here:
+    
+    // Replace 'Anubhav Samanta' with the actual user name from your session/backend data
+    const actualUserName = "Anubhav Samanta"; 
+    
+    const userNameElement = document.getElementById('userNamePlaceholder');
+    if (userNameElement && actualUserName) {
+        // Only display the first word of the name (e.g., "Anubhav") or the full name, based on preference.
+        // I will use the first name for a friendly greeting.
+        const firstName = actualUserName.split(' ')[0]; 
+        userNameElement.textContent = firstName;
     }
-  };
-</script>
+  </script>
 
 </body>
 </html>
