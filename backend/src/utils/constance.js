@@ -1,4 +1,4 @@
-export const DB_NAME = "learning-365";
+export const DB_NAME = "learningProtal";
 
 export const options = {
     httpOnly: true,

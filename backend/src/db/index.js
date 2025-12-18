@@ -5,10 +5,13 @@ const mongodbUri = process.env.MONGODB_URI;
 
 export default async function connectDB() {
     try {
-        const connectionInstance = await mongoose.connect(`${mongodbUri}/${DB_NAME}`);
-        console.log(`\nMongoDB connected: ${connectionInstance.connection.host}`);
+        const connectionInstance = await mongoose.connect(mongodbUri, {
+            dbName: DB_NAME,
+        });
+
+        console.log(`MongoDB connected: ${connectionInstance.connection.host}`);
     } catch (e) {
-        console.log(`Mongodb connection faild: ${e.message}`);
-        process.exit();
+        console.error("MongoDB connection failed:", e.message);
+        process.exit(1);
     }
 }

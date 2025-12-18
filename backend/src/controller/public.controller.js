@@ -1,5 +1,6 @@
 import { User } from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { options } from "../utils/constance.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
     const { full_name, email, password } = req.body;

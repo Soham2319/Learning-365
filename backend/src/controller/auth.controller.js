@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { options } from "../utils/constance.js";
 
-export const logout = asyncHandler(async (req, res) => {
+export const logoutUser = asyncHandler(async (req, res) => {
     await User.findByIdAndUpdate(
         req.user._id,
         {
@@ -10,9 +10,9 @@ export const logout = asyncHandler(async (req, res) => {
         },
         { new: true }
     );
-
-    console.log("logout succesfully");
+    console.log("logout successfully");
     return res.status(200).clearCookie("jwtToken", options).json({
-        status: "SUCCESS",
+        status: 200,
+        message: "User logout successfully",
     });
 });
