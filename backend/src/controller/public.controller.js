@@ -1,6 +1,7 @@
 import { User } from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { options } from "../utils/constance.js";
+import { sendWelcomeEmail } from "../utils/sendMail.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
     const { full_name, email, stream, password } = req.body;
@@ -39,6 +40,12 @@ export const registerUser = asyncHandler(async (req, res) => {
             status: "INTERNAL_SERVER_ERROR",
             error_message: "Something went wrong on server",
         });
+    }
+
+    try {
+        await sendWelcomeEmail(email, full_name);
+    } catch (e) {
+        console.log(e.message);
     }
 
     return res.status(200).json({

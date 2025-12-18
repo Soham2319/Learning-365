@@ -26,6 +26,13 @@ const userSchema = new mongoose.Schema(
             minlength: 6,
         },
 
+        enroll_curse: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Course",
+            },
+        ],
+
         jwtToken: {
             type: String,
             default: "",
