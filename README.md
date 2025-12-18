@@ -1,4 +1,6 @@
-## 🚨 Important Notice: Branch Usage & Code Push Guidelines
+Learning 365
+
+<!-- ## 🚨 Important Notice: Branch Usage & Code Push Guidelines
 
 ### Dear Project Group Members,
 
@@ -77,4 +79,4 @@ git push origin testing
 ---
 
 Thank you for your cooperation and support.
-Let’s keep the repository clean, stable, and well-managed 🚀
+Let’s keep the repository clean, stable, and well-managed 🚀 -->

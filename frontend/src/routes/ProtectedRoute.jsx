@@ -12,7 +12,6 @@ function ProtectedRoute({ children }) {
         setLoading(false);
     }, []);
 
-    // Loading Spinner (Tailwind only)
     if (loading) {
         return (
             <div className="flex items-center justify-center h-screen bg-gray-100">
@@ -21,7 +20,6 @@ function ProtectedRoute({ children }) {
         );
     }
 
-    // Not logged in
     if (!user) {
         return <Navigate to="/auth/login" state={{ from: location }} replace />;
     }
