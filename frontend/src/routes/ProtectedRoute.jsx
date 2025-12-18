@@ -1,9 +1,9 @@
 import { Navigate, useLocation } from "react-router-dom";
 
-function ProtectedRoute({ children }) {
+async function ProtectedRoute({ children }) {
     const location = useLocation();
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = await JSON.parse(localStorage.getItem("user"));
 
     if (!user) {
         return <Navigate to="/auth/login" state={{ from: location }} replace />;
