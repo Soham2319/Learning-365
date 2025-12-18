@@ -6,6 +6,7 @@ import cors from "cors";
 import publicRoute from "./routes/public.routes.js";
 import userRoute from "./routes/user.routes.js";
 import authRoute from "./routes/auth.routes.js";
+import healthCheck from "./routes/healthChekc.routes.js";
 
 const app = express();
 
@@ -22,6 +23,9 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 export const BASE_API = "/api/v1";
+
+// heath check controller - rotues
+app.use(`${BASE_API}`, healthCheck);
 
 // public controller - routes
 app.use(`${BASE_API}/public`, publicRoute);
