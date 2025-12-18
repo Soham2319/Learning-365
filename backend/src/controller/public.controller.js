@@ -3,7 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { options } from "../utils/constance.js";
 
 export const registerUser = asyncHandler(async (req, res) => {
-    const { full_name, email, password } = req.body;
+    const { full_name, email, stream, password } = req.body;
 
     if ([full_name, email, password].some((field) => !field || field.trim() == "")) {
         return res.status(400).json({
@@ -25,6 +25,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 
     const user = await User.create({
         full_name,
+        stream,
         email,
         password,
     });
