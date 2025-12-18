@@ -9,21 +9,25 @@ import {
     Save,
     Shield,
     Clock,
-    PenLine,
+    X,
+    Upload,
 } from "lucide-react";
 
 function ProfilePage() {
     const [user, setUser] = useState({
-        fullName: "",
+        full_name: "",
         email: "",
         stream: "",
         phone: "",
         location: "",
         joinDate: "",
+        profileImage: "", // New state for profile image
     });
 
-    const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
 
     // Load user data
     useEffect(() => {
@@ -32,25 +36,26 @@ function ProfilePage() {
             try {
                 const parsedUser = JSON.parse(storedUser);
                 setUser({
-                    fullName: parsedUser.fullName || parsedUser.full_name || "Student Name",
+                    full_name: parsedUser.full_name || "Student Name",
                     email: parsedUser.email || "student@example.com",
                     stream: parsedUser.stream || "General Stream",
                     phone: parsedUser.phone || "+91 98765 43210",
                     location: parsedUser.location || "New Delhi, India",
                     joinDate: parsedUser.joinDate || "January 2025",
+                    profileImage: parsedUser.profileImage || "",
                 });
             } catch (e) {
                 console.error("Error parsing user data", e);
             }
         } else {
-            // Fallback if no user in localstorage (for dev purposes)
             setUser({
-                fullName: "Student Name",
+                full_name: "Student Name",
                 email: "student@example.com",
                 stream: "General Stream",
                 phone: "+91 98765 43210",
                 location: "New Delhi, India",
                 joinDate: "January 2025",
+                profileImage: "",
             });
         }
         setIsLoading(false);
@@ -66,17 +71,49 @@ function ProfilePage() {
             .slice(0, 2);
     };
 
-    // Handle Input Changes
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setUser((prev) => ({ ...prev, [name]: value }));
+    // --- Image Upload Handlers ---
+
+    const handleImageClick = () => {
+        setIsImageModalOpen(true);
+        setPreviewUrl(user.profileImage || null);
+        setSelectedImage(null);
     };
 
-    // Save changes to LocalStorage
-    const handleSave = () => {
-        localStorage.setItem("user", JSON.stringify(user));
-        setIsEditing(false);
-        // Ideally, you would also make an API call here to update the backend
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setSelectedImage(file);
+            // Create a preview URL
+            const objectUrl = URL.createObjectURL(file);
+            setPreviewUrl(objectUrl);
+        }
+    };
+
+    const handleSaveImage = () => {
+        if (selectedImage) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result;
+                const updatedUser = { ...user, profileImage: base64String };
+                setUser(updatedUser);
+                localStorage.setItem("user", JSON.stringify(updatedUser));
+                setIsImageModalOpen(false);
+            };
+            reader.readAsDataURL(selectedImage);
+        } else if (previewUrl === null) {
+            // Handle removing image
+            const updatedUser = { ...user, profileImage: "" };
+            setUser(updatedUser);
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+            setIsImageModalOpen(false);
+        } else {
+            setIsImageModalOpen(false);
+        }
+    };
+
+    const handleRemoveImage = () => {
+        setSelectedImage(null);
+        setPreviewUrl(null);
     };
 
     if (isLoading) {
@@ -94,25 +131,36 @@ function ProfilePage() {
                     <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
                         {/* --- Profile Header / Cover Section --- */}
                         <div className="relative mb-12 bg-white rounded-3xl shadow-sm border border-slate-100 pb-6">
-                            {/* Cover Image/Gradient */}
+                            {/* Cover Image */}
                             <div className="h-48 w-full bg-gradient-to-r from-blue-600 to-indigo-700 rounded-t-3xl overflow-hidden relative">
                                 <div className="absolute inset-0 bg-white/10 opacity-20 pattern-dots"></div>
-                                {/* Decorative circles */}
                                 <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
                                 <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-40 h-40 bg-black/10 rounded-full blur-2xl"></div>
                             </div>
 
-                            {/* Profile Info Wrapper - Using Flexbox & Negative Margin for Perfect Alignment */}
+                            {/* Profile Info Wrapper */}
                             <div className="px-6 sm:px-10">
                                 <div className="flex flex-col md:flex-row items-center md:items-end -mt-16 relative z-10">
                                     {/* Avatar */}
                                     <div className="relative group/avatar">
-                                        <div className="w-32 h-32 rounded-full border-4 border-white bg-slate-200 flex items-center justify-center shadow-xl overflow-hidden relative">
-                                            <span className="text-3xl font-bold text-slate-500 select-none">
-                                                {getInitials(user.fullName)}
-                                            </span>
-                                            {/* Hover Effect for upload */}
-                                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity cursor-pointer">
+                                        <div
+                                            className="w-32 h-32 rounded-full border-4 border-white bg-slate-200 flex items-center justify-center shadow-xl overflow-hidden relative cursor-pointer"
+                                            onClick={handleImageClick}
+                                        >
+                                            {user.profileImage ? (
+                                                <img
+                                                    src={user.profileImage}
+                                                    alt="Profile"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <span className="text-3xl font-bold text-slate-500 select-none">
+                                                    {getInitials(user.full_name)}
+                                                </span>
+                                            )}
+
+                                            {/* Hover Overlay */}
+                                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity">
                                                 <Camera className="text-white w-8 h-8" />
                                             </div>
                                         </div>
@@ -123,35 +171,14 @@ function ProfilePage() {
                                         ></div>
                                     </div>
 
-                                    {/* Name & Details - Perfectly Aligned */}
+                                    {/* Name & Details */}
                                     <div className="mt-4 md:mt-0 md:ml-6 text-center md:text-left flex-1 md:pb-2">
                                         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 drop-shadow-sm">
-                                            {user.fullName}
+                                            {user.full_name}
                                         </h1>
                                         <p className="text-slate-600 font-medium flex items-center justify-center md:justify-start bg-slate-100/80 md:bg-transparent px-3 py-1 md:p-0 rounded-full md:rounded-none mt-2 md:mt-1">
                                             {user.stream} Student
                                         </p>
-                                    </div>
-
-                                    {/* Edit Button */}
-                                    <div className="mt-6 md:mt-0 md:mb-2">
-                                        <button
-                                            onClick={() => setIsEditing(!isEditing)}
-                                            className={`px-5 py-2.5 font-semibold rounded-xl shadow-sm transition-all flex items-center ${
-                                                isEditing
-                                                    ? "bg-red-50 text-red-600 hover:bg-red-100 border border-red-200"
-                                                    : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 ring-1 ring-slate-200"
-                                            }`}
-                                        >
-                                            {isEditing ? (
-                                                <>Cancel Editing</>
-                                            ) : (
-                                                <>
-                                                    <PenLine className="w-4 h-4 mr-2" /> Edit
-                                                    Profile
-                                                </>
-                                            )}
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -168,64 +195,34 @@ function ProfilePage() {
                                             <User className="w-5 h-5 mr-2 text-blue-600" />
                                             Personal Information
                                         </h3>
-                                        {isEditing && (
-                                            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded border border-blue-100 animate-pulse">
-                                                Editing Enabled
-                                            </span>
-                                        )}
                                     </div>
 
                                     <div className="p-6 grid grid-cols-1 gap-6">
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                             <ProfileField
                                                 label="Full Name"
-                                                name="fullName"
-                                                value={user.fullName}
-                                                onChange={handleInputChange}
+                                                value={user.full_name}
                                                 icon={User}
-                                                editable={isEditing}
                                             />
                                             <ProfileField
                                                 label="Email Address"
-                                                name="email"
                                                 value={user.email}
-                                                onChange={handleInputChange}
                                                 icon={Mail}
-                                                editable={false}
-                                                helperText="Contact admin to change email"
                                             />
                                         </div>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                        {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                             <ProfileField
                                                 label="Phone Number"
-                                                name="phone"
                                                 value={!user.phone ? "00000000" : user.phone}
-                                                onChange={handleInputChange}
                                                 icon={Phone}
-                                                editable={isEditing}
                                             />
                                             <ProfileField
                                                 label="Location"
-                                                name="location"
                                                 value={user.location}
-                                                onChange={handleInputChange}
                                                 icon={MapPin}
-                                                editable={isEditing}
                                             />
-                                        </div>
+                                        </div> */}
                                     </div>
-
-                                    {isEditing && (
-                                        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end">
-                                            <button
-                                                onClick={handleSave}
-                                                className="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all flex items-center transform active:scale-95"
-                                            >
-                                                <Save className="w-4 h-4 mr-2" />
-                                                Save Changes
-                                            </button>
-                                        </div>
-                                    )}
                                 </div>
 
                                 {/* Academic Details Card */}
@@ -311,14 +308,6 @@ function ProfilePage() {
                                     </div>
                                 </div>
 
-                                {/* Mobile-only Edit Button (Backup) */}
-                                <button
-                                    onClick={() => setIsEditing(!isEditing)}
-                                    className="w-full sm:hidden py-3 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl shadow-sm hover:bg-slate-50 transition-colors flex items-center justify-center"
-                                >
-                                    {isEditing ? "Cancel Editing" : "Edit Profile"}
-                                </button>
-
                                 {/* Promotional / Tip Widget */}
                                 <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden">
                                     <div className="relative z-10">
@@ -333,7 +322,6 @@ function ProfilePage() {
                                             View Recommendations
                                         </button>
                                     </div>
-                                    {/* Background decoration */}
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
                                 </div>
                             </div>
@@ -341,41 +329,120 @@ function ProfilePage() {
                     </div>
                 </div>
             </main>
+
+            {/* --- Image Upload Modal --- */}
+            {isImageModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+                        {/* Modal Header */}
+                        <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                            <h3 className="font-bold text-lg text-slate-800">
+                                Update Profile Photo
+                            </h3>
+                            <button
+                                onClick={() => setIsImageModalOpen(false)}
+                                className="p-1 rounded-full hover:bg-slate-200 text-slate-500 transition-colors"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        {/* Modal Content */}
+                        <div className="p-6 space-y-6">
+                            {/* Preview Area */}
+                            <div className="flex flex-col items-center justify-center">
+                                <div className="w-40 h-40 rounded-full border-4 border-slate-100 shadow-inner bg-slate-50 overflow-hidden mb-4 relative group">
+                                    {previewUrl ? (
+                                        <img
+                                            src={previewUrl}
+                                            alt="Preview"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex flex-col items-center justify-center text-slate-300">
+                                            <User className="w-16 h-16 mb-2 opacity-50" />
+                                            <span className="text-xs font-medium uppercase tracking-wider">
+                                                No Image
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {previewUrl && (
+                                    <button
+                                        onClick={handleRemoveImage}
+                                        className="text-xs font-bold text-red-500 hover:text-red-600 hover:underline"
+                                    >
+                                        Remove Current Photo
+                                    </button>
+                                )}
+                            </div>
+
+                            {/* Upload Action */}
+                            <div className="space-y-3">
+                                <label className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all group">
+                                    <div className="flex items-center space-x-2">
+                                        <div className="p-2 bg-slate-100 text-slate-500 rounded-lg group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
+                                            <Upload className="w-5 h-5" />
+                                        </div>
+                                        <span className="text-sm font-medium text-slate-600 group-hover:text-blue-700">
+                                            {selectedImage
+                                                ? "Change Selected File"
+                                                : "Upload New Photo"}
+                                        </span>
+                                    </div>
+                                    <input
+                                        type="file"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleFileChange}
+                                    />
+                                </label>
+                                <p className="text-xs text-center text-slate-400">
+                                    Recommended: Square JPG, PNG. Max 2MB.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
+                            <button
+                                onClick={() => setIsImageModalOpen(false)}
+                                className="px-4 py-2.5 font-semibold text-slate-600 hover:bg-slate-200 rounded-lg transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSaveImage}
+                                disabled={!selectedImage && previewUrl === user.profileImage}
+                                className="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-lg shadow-lg shadow-blue-500/20 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center"
+                            >
+                                <Save className="w-4 h-4 mr-2" />
+                                Save Photo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
-// Helper Component for Form Fields
-function ProfileField({ label, name, value, onChange, icon: Icon, editable, helperText }) {
+function ProfileField({ label, value, icon: Icon, helperText }) {
     return (
         <div className="space-y-1.5 w-full">
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center mb-1">
                 <Icon className="w-3 h-3 mr-1.5" />
                 {label}
             </label>
-            {editable ? (
-                <div className="relative">
-                    <input
-                        type="text"
-                        name={name}
-                        value={value}
-                        onChange={onChange}
-                        className="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm"
-                    />
-                    {helperText && <p className="text-xs text-slate-400 mt-1 ml-1">{helperText}</p>}
-                </div>
-            ) : (
-                <div>
-                    <p className="text-slate-800 font-medium px-4 py-2.5 bg-slate-50 rounded-xl border border-transparent truncate">
-                        {value}
-                    </p>
-                    {helperText && (
-                        <p className="text-xs text-amber-600/80 mt-1 ml-1 font-medium">
-                            {helperText}
-                        </p>
-                    )}
-                </div>
-            )}
+            <div>
+                <p className="text-slate-800 font-medium px-4 py-2.5 bg-slate-50 rounded-xl border border-transparent truncate">
+                    {value}
+                </p>
+                {helperText && (
+                    <p className="text-xs text-amber-600/80 mt-1 ml-1 font-medium">{helperText}</p>
+                )}
+            </div>
         </div>
     );
 }

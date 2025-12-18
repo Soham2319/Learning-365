@@ -12,6 +12,7 @@ import {
     AlertCircle,
     Check,
 } from "lucide-react";
+import { BASE_API } from "../utils/constance";
 
 function UserAuthenticationPage() {
     // State to toggle between Login and Register views
@@ -32,7 +33,7 @@ function UserAuthenticationPage() {
 
     // UI Status States
     const [isLoading, setIsLoading] = useState(false);
-    const [statusMessage, setStatusMessage] = useState({ type: "", text: "" }); // type: 'error' | 'success'
+    const [statusMessage, setStatusMessage] = useState({ type: "", text: "" });
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -68,7 +69,7 @@ function UserAuthenticationPage() {
 
     const handleLogin = async () => {
         try {
-            const response = await fetch("http://localhost:8081/api/v1/public/login", {
+            const response = await fetch(`${BASE_API}/public/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -85,14 +86,11 @@ function UserAuthenticationPage() {
                 throw new Error(data.message || "Login failed. Please check your credentials.");
             }
 
-            // Login Success
             setStatusMessage({ type: "success", text: "Login Successful! Redirecting..." });
 
-            // Save to localStorage
-            localStorage.setItem("token", data.token); // Assuming API returns { token: "...", ... }
-            localStorage.setItem("user", JSON.stringify(data.user)); // Assuming API returns { user: {...}, ... }
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
 
-            // Redirect after short delay to show success message
             setTimeout(() => {
                 window.location.href = "/";
             }, 1500);
@@ -105,7 +103,7 @@ function UserAuthenticationPage() {
 
     const handleRegister = async () => {
         try {
-            const response = await fetch("http://localhost:8081/api/v1/public/register", {
+            const response = await fetch(`${BASE_API}/public/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -124,11 +122,9 @@ function UserAuthenticationPage() {
                 throw new Error(data.message || "Registration failed. Try again.");
             }
 
-            // Registration Success
             setStatusMessage({ type: "success", text: "Registration Successful! Please Login." });
-            setFormData({ ...formData, password: "", confirmPassword: "" }); // Clear sensitive fields
+            setFormData({ ...formData, password: "", confirmPassword: "" });
 
-            // Switch to login view after success
             setTimeout(() => {
                 setIsLoginView(true);
                 setStatusMessage({ type: "", text: "" });
@@ -167,14 +163,14 @@ function UserAuthenticationPage() {
             </div>
 
             {/* --- Main Card --- */}
-            <main className="relative z-10 w-full max-w-[450px] animate-in fade-in zoom-in duration-300">
+            <main className="relative z-10 w-full max-w-112.5 animate-in fade-in zoom-in duration-300">
                 <section
                     className="bg-white/30 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-white/20"
                     aria-labelledby="auth-heading"
                 >
                     {/* Logo / Brand Header */}
                     <div className="pt-8 pb-4 text-center">
-                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white mb-4 shadow-lg shadow-blue-500/30 ring-4 ring-blue-50">
+                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-blue-600 to-indigo-700 text-white mb-4 shadow-lg shadow-blue-500/30 ring-4 ring-blue-50">
                             <BookOpen className="w-7 h-7" />
                         </div>
                         <h2 className="text-3xl font-extrabold tracking-tight text-white">
@@ -198,9 +194,9 @@ function UserAuthenticationPage() {
                                     }`}
                                 >
                                     {statusMessage.type === "error" ? (
-                                        <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
+                                        <AlertCircle className="w-4 h-4 mr-2 shrink-0" />
                                     ) : (
-                                        <Check className="w-4 h-4 mr-2 flex-shrink-0" />
+                                        <Check className="w-4 h-4 mr-2 shrink-0" />
                                     )}
                                     {statusMessage.text}
                                 </div>
@@ -399,7 +395,7 @@ function UserAuthenticationPage() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className={`w-full group relative flex justify-center py-3.5 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg shadow-blue-500/30 transition-all transform active:scale-[0.98] mt-4 ${
+                                className={`w-full group relative flex justify-center py-3.5 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg shadow-blue-500/30 transition-all transform active:scale-[0.98] mt-4 ${
                                     isLoading ? "opacity-70 cursor-not-allowed" : ""
                                 }`}
                             >
