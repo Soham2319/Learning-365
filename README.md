@@ -1,5 +1,25 @@
 Learning 365
 
+Create a professional README.md for an Online Class and Library Management System.
+
+Project name: Learning 365
+Tech stack: React.js, Node.js, Express.js, MongoDB, Tailwind CSS
+Project type: Full Stack Web Application
+
+Include:
+- Project overview
+- Key features for Online Classes and Library Management
+- User roles (Student, Admin)
+- Tech stack details
+- Folder structure (Frontend & Backend)
+- Setup and installation steps
+- Screenshots section (placeholder)
+- Future enhancements
+- Team contribution section
+- License section
+
+Keep the language simple, clean, and professional.
+
 <!-- ## 🚨 Important Notice: Branch Usage & Code Push Guidelines
 
 ### Dear Project Group Members,
